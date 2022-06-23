@@ -1,0 +1,69 @@
+@use 'pages-registry' as *;
+@use 'component-styles' as *;
+@use 'abstracts/common' as *;
+@use 'abstracts/colors' as *;
+
+// html,
+// body {
+//   padding: 0;
+//   margin: 0;
+//   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+//     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+// }
+
+// a {
+//   color: inherit;
+//   text-decoration: none;
+// }
+
+// * {
+//   box-sizing: border-box;
+// }
+
+@font-face {
+    font-family: Rubik;
+    src: url('../assets/fonts/Rubik/static/Rubik-Regular.ttf');
+}
+
+* {
+    margin: 0;
+}
+
+html {
+    height: 100%;
+}
+
+p, 
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6, 
+button,
+ul,
+ol,
+li {
+    font-family: Rubik;
+}
+
+.full-height {
+    min-height: 100vh;
+}
+
+.page {
+    min-height: 100vh;
+}
+
+.mc-background {
+    background-size: cover;
+    background-image: url('../assets/images/minecraft-edit.png');
+}
+
+button {
+    border-radius: 5px;
+}
+
+@mixin debug-outline {
+    outline: 1px solid red;
+}
