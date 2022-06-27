@@ -1,5 +1,7 @@
 import { useEffect } from "react";
-import Checkbox from "./Checkbox";
+import Checkbox from "../Checkbox";
+
+import './style.scss'
 
 interface Iprops {
     items: string[];

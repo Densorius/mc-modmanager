@@ -1,5 +1,7 @@
-import NavButton from "../components/NavButton";
-import logisticGraphic from "../assets/images/undraw_logistics_x-4-dc.svg";
+import NavButton from "../../components/NavButton";
+import logisticGraphic from "../../assets/images/undraw_logistics_x-4-dc.svg";
+
+import './style.scss'
 
 export default function Home() {
     return (

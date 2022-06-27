@@ -1,5 +1,7 @@
-import NavButton from "../components/NavButton";
-import SelectList from "../components/SelectList";
+import NavButton from "../../components/NavButton";
+import SelectList from "../../components/SelectList";
+
+import './style.scss'
 
 const name = 'Vanilla Performance';
 const version = '1.18.1';
