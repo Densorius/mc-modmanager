@@ -7,6 +7,8 @@ $table-base-color: hsl(240, 5%, 22%);
     padding-left: 0;
 
     &--item {
+        user-select: none;
+
         &:nth-child(even) {
             background-color: darken($table-base-color, 2%);
         }

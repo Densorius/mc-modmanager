@@ -16,6 +16,8 @@ func Initialize(assets fs.FS) {
 		Title:     "mc-modmanager",
 		Width:     1024,
 		Height:    768,
+		MinWidth:  640,
+		MinHeight: 480,
 		Assets:    assets,
 		OnStartup: app.startup,
 		Bind: []interface{}{

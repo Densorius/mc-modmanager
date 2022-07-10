@@ -20,12 +20,12 @@ export default function Home() {
                         </div>
 
                         <div className="content--bottom">
-                            <button className="home-panel-button home-panel-button--normal">Archive mods</button>
-                            <NavButton className="home-panel-button home-panel-button--inverted" href='/mod-manager'>Manage mods</NavButton>
+                            <button className="home-panel-button button-primary">Archive mods</button>
+                            <NavButton className="home-panel-button button-primary--inverted" href='/mod-manager'>Manage mods</NavButton>
                         </div>
 
                     </div>
-                    <div className="home-panel__devider"></div>
+                    <div className="home-panel__divider"></div>
                     <div className="home-panel__img">
                         <img id="logistic-graphic" src={logisticGraphic} />
                     </div>

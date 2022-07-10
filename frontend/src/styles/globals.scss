@@ -1,5 +1,5 @@
-@use 'abstracts/common' as *;
-@use 'abstracts/colors' as *;
+@use 'abstracts/common';
+@use 'abstracts/colors';
 
 // html,
 // body {
@@ -60,6 +60,43 @@ li {
 
 button {
     border-radius: 5px;
+}
+
+.button-primary {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    box-shadow: common.$shadow;
+
+    background-color: colors.$button-primary;
+    border: none;
+    color: black;
+
+    &:hover {
+        background-color: lighten(colors.$button-primary, 5%);
+    }
+
+    &:active {
+        background-color: darken(colors.$button-primary, 10%);
+        box-shadow: none;
+    }
+    
+    &--inverted {
+        background-color: colors.$background-primary;
+        color: colors.$button-primary;
+        border: 2px solid colors.$button-primary;
+    
+        &:hover {
+            border: 2px solid lighten(colors.$button-primary, 5%);
+            color: lighten(colors.$button-primary, 5%);
+        }
+    
+        &:active {
+            border: 2px solid darken(colors.$button-primary, 10%);
+            color: darken(colors.$button-primary, 10%);
+            box-shadow: none;
+        }
+    }
 }
 
 @mixin debug-outline {

@@ -2,11 +2,15 @@
 @use '../../styles/abstracts/common';
 
 $table-base-color: hsl(240, 5%, 22%);
+$info-bar-height: 3.5em;
 
 .info-bar {
-    min-height: 3.5em;
+    min-height: $info-bar-height;
     background-color: colors.$background-primary;
     box-shadow: common.$shadow;
+    position: relative;
+
+    z-index: 1;
 
     display: flex;
     justify-content: space-between;
@@ -23,20 +27,7 @@ $table-base-color: hsl(240, 5%, 22%);
     min-width: 3em;
     min-height: 3em;
 
-    background-color: colors.$button-primary;
-    box-shadow: common.$shadow;
-
     color: white;
-
-    border: none;
-
-    &:hover {
-        background-color: lighten(colors.$button-primary, 5%);
-    }
-
-    &:active {
-        background-color: darken(colors.$button-primary, 10%);
-    }
 }
 
 .archive-info-main {
@@ -44,7 +35,7 @@ $table-base-color: hsl(240, 5%, 22%);
     justify-content: center;
     
     text-align: center;
-    margin-top: 0.2em;
+    margin-top: 0.3em;
 
     &__header {
         color: hsl(240, 10%, 51%);
@@ -72,16 +63,52 @@ $table-base-color: hsl(240, 5%, 22%);
     }
 }
 
+.mod-manager-container {
+    display: flex;
+}
+
+.mod-manager-sidebar {
+    z-index: 0;
+    flex-shrink: 1;
+    
+    min-height: calc(100vh - $info-bar-height);
+
+    background-color: colors.$background-primary;
+    box-shadow: -1px 0px 2px colors.$shadow-color;
+
+    &--container {
+        //border: 1px dotted red;
+        margin: 0.7em;
+
+        & > button {
+            width: 100%;
+            margin-bottom: 0.5em;
+        }
+    }
+
+    &--divider {
+        background-color: colors.$divider-color;
+        height: 1px;
+        margin-bottom: 0.5em;
+    }
+}
+
 .mods-panel {
     background-color: colors.$background-primary;
     border-radius: common.$border-radius;
+    box-shadow: common.$shadow;
+
+    display: inline-block;
     padding: 1em;
-    width: 20em;
+    width: 50%;
+    min-width: 20em;
 
     margin-left: auto;
     margin-right: auto;
     margin-top: 1em;
     margin-bottom: 1em;
+
+    height: min-content;
 
     &__list {
         background-color: $table-base-color;

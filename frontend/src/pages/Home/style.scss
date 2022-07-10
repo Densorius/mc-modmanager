@@ -52,14 +52,14 @@ h2, p {
         }
     }
 
-    &__devider {
+    &__divider {
         display: block;
         width: 1px;
         height: calc(400px - 40px);
         flex-shrink: 1;
 
         flex-basis: 1px;
-        background-color: hsl(240, 9%, 37%);
+        background-color: colors.$divider-color;
         margin-top: 20px;
         margin-bottom: 20px;
     }
@@ -79,39 +79,6 @@ h2, p {
     width: 250px;
     margin-top: 5px;
     margin-bottom: 5px;
-    box-shadow: common.$shadow;
-
-    &--normal {
-        background-color: colors.$button-primary;
-        border: none;
-        color: black;
-    
-        &:hover {
-            background-color: lighten(colors.$button-primary, 5%);
-        }
-    
-        &:active {
-            background-color: darken(colors.$button-primary, 10%);
-            box-shadow: none;
-        }
-    }
-    
-    &--inverted {
-        background-color: colors.$background-primary;
-        color: colors.$button-primary;
-        border: 2px solid colors.$button-primary;
-    
-        &:hover {
-            border: 2px solid lighten(colors.$button-primary, 5%);
-            color: lighten(colors.$button-primary, 5%);
-        }
-    
-        &:active {
-            border: 2px solid darken(colors.$button-primary, 10%);
-            color: darken(colors.$button-primary, 10%);
-            box-shadow: none;
-        }
-    }
 }
 
 #logistic-graphic {
