@@ -17,20 +17,61 @@ export default function SelectList(props: Iprops) {
 
     useEffect(() => {
 
-        let listItems = document.querySelectorAll('li.selectlist--item');
+        let listItems = document.querySelectorAll('li.selectlist--item') as NodeListOf<HTMLLIElement>;
+        let range: {first: number | null, last: number | null} = {
+            first: null,
+            last: null
+        }
+
+        function swapRangeValues(range: {first: number | null, last: number | null}) {
+            return {first: range.last, last: range.first}
+        }
 
         function handleSelectChange(event: Event | KeyboardEvent) {
 
             let selectedItems: string[] = [];
 
-            // deselect all items except when user is holding ctrl key
-            if (!(event as KeyboardEvent).ctrlKey) {
+            let shiftPressed = (event as KeyboardEvent).shiftKey;
+            let ctrlPressed = (event as KeyboardEvent).ctrlKey;
+
+            // deselect all items except when user is holding ctrl or shift key
+            if (!ctrlPressed && !shiftPressed) {
                 listItems.forEach(element => {
                     element.classList.remove(SELECTED_CLASS)
                 });
             }
 
-            (event.target as Element).classList.toggle(SELECTED_CLASS);
+            if (shiftPressed) {
+                
+                let indexString = (event.target as HTMLLIElement).dataset.index!
+
+                if (range.first == null) {
+                    (event.target as Element).classList.add(SELECTED_CLASS)
+
+                    range.first = parseInt(indexString)
+                } else {
+                    range.last = parseInt(indexString)
+                }
+
+                if (range.first != null && range.last != null) {
+                    if (range.first > range.last) {
+                        range = swapRangeValues(range);
+                    }
+
+                    listItems.forEach((element, index) => {
+                        if (index >= range.first! && index <= range.last!) {
+                            element.classList.add(SELECTED_CLASS)
+                        }
+                    });
+                }
+            }
+
+            if (!shiftPressed) {
+                let item = event.target as HTMLLIElement
+
+                item.classList.add(SELECTED_CLASS);
+                range.first = parseInt(item.dataset.index!);
+            }
     
             listItems.forEach(element => {
                 if (element.classList.contains(SELECTED_CLASS)) {
@@ -60,9 +101,9 @@ export default function SelectList(props: Iprops) {
 }
 
 function renderItems(items: string[]) {
-    return items.map(item => {
+    return items.map((item, index) => {
         return (
-            <li key={item} className="selectlist--item">{item}</li>
+            <li key={item} data-index={index} className="selectlist--item">{item}</li>
         )
     });
 }
