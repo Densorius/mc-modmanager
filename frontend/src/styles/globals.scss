@@ -80,6 +80,12 @@ button {
         background-color: darken(colors.$button-primary, 10%);
         box-shadow: none;
     }
+
+    &:disabled {
+        filter: opacity(50%);
+        background-color: colors.$button-primary;
+        box-shadow: none;
+    }
     
     &--inverted {
         background-color: colors.$background-primary;

@@ -1,9 +1,12 @@
+import { useState } from "react";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
+import InfoBar from "./infobar";
+import SideBar from "./sidebar";
 
 import './style.scss'
 
-const name = 'Vanilla Performance';
+const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
 
@@ -16,43 +19,28 @@ function renderMods(): JSX.Element[] {
 }
 
 export default function ModManager() {
+
+    let [selectedMods, setSelectedMods] = useState([] as string[])
+    let [buttonsDisabled, setButtonsDisabled] = useState(true)
+
     return (
         <div className="mc-background page">
-            <div className="info-bar">
-                <div className="info-bar-button-container">
-                    <NavButton className="home-button button-primary" href="/">⌂ Home</NavButton>
-                </div>
-                <div className="archive-info-main">
-                    <h4 className="archive-info-main__header">Selected Archive</h4>
-                    <p className="archive-info-main__info">{name}</p>
-                </div>
-                <div className="archive-info-rest">
-                    <p>Minecraft: <span className="highlight">{version}</span></p>
-                    <p className="border">Modloader: <span className="highlight">{modloader}</span></p>
-                </div>
-            </div>
+            <InfoBar name={name} version={version} modloader={modloader} />
 
             <div className="mod-manager-container">
                 <div className="mods-panel">
                     <ul className="mods-panel__list">
                         <SelectList items={mods} onChange={(selected) => {
-                            let text = 'selected: ';
-                            
-                            selected.forEach(item => text += item + ' ');
+                            setSelectedMods(selected);
 
-                            console.log(text);
+                            if (selected.length > 0) {
+                                setButtonsDisabled(false);
+                            }
                         }} />
                     </ul>
                 </div>
 
-                <div className="mod-manager-sidebar">
-                    <div className="mod-manager-sidebar--container">
-                        <button className="button-primary">Add</button>
-                        <div className="mod-manager-sidebar--divider"></div>
-                        <button className="button-primary">Delete</button>
-                        <button className="button-primary">Replace</button>
-                    </div>
-                </div>
+                <SideBar buttonsDisabled={buttonsDisabled} />
             </div>
         </div>
     )

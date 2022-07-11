@@ -20,8 +20,8 @@ export default function Home() {
                         </div>
 
                         <div className="content--bottom">
-                            <button className="home-panel-button button-primary">Archive mods</button>
-                            <NavButton className="home-panel-button button-primary--inverted" href='/mod-manager'>Manage mods</NavButton>
+                            <button className="home-panel-button button-primary">Manage archives</button>
+                            <NavButton className="home-panel-button button-primary--inverted" href='/mod-manager'>Manage active mods</NavButton>
                         </div>
 
                     </div>

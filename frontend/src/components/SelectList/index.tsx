@@ -87,6 +87,7 @@ export default function SelectList(props: Iprops) {
         });
 
         return () => {
+
             listItems.forEach(element => {
                 element.removeEventListener('click', handleSelectChange);
             });
