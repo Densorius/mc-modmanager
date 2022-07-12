@@ -28,7 +28,7 @@
 }
 
 html {
-    height: 100%;
+    height: 100vh;
 }
 
 p, 
@@ -58,8 +58,17 @@ li {
     background-image: url('../assets/images/minecraft-edit.png');
 }
 
-button {
+button, a[target] {
     border-radius: 5px;
+    box-shadow: common.$shadow;
+
+    &:active {
+        box-shadow: none;
+    }
+
+    &:disabled {
+        box-shadow: none;
+    }
 }
 
 .button-primary {

@@ -1,11 +1,24 @@
+import { Button } from '@mantine/core';
+
+const style = {
+    '&:not(.__mantine-ref-loading):disabled': {
+        backgroundColor: '#3c3c47',
+
+        '&:hover': {
+            backgroundColor: '#3c3c47'
+        }
+    },
+}
+
 export default function SideBar(props: {buttonsDisabled: boolean}) {
+
     return (
         <div className="mod-manager-sidebar">
             <div className="mod-manager-sidebar--container">
-                <button className="button-primary">Add</button>
+                <Button>Add</Button>
                 <div className="mod-manager-sidebar--divider"></div>
-                <button className="button-primary" disabled={props.buttonsDisabled}>Delete</button>
-                <button className="button-primary" disabled={props.buttonsDisabled}>Replace</button>
+                <Button disabled={props.buttonsDisabled} sx={style}>Delete</Button>
+                <Button disabled={props.buttonsDisabled} sx={style}>Replace</Button>
             </div>
         </div>
     )

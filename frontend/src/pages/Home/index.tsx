@@ -1,7 +1,10 @@
 import NavButton from "../../components/NavButton";
 import logisticGraphic from "../../assets/images/undraw_logistics_x-4-dc.svg";
 
+import { Button } from '@mantine/core';
+
 import './style.scss'
+import { Link } from "react-router-dom";
 
 export default function Home() {
     return (
@@ -20,8 +23,8 @@ export default function Home() {
                         </div>
 
                         <div className="content--bottom">
-                            <button className="home-panel-button button-primary">Manage archives</button>
-                            <NavButton className="home-panel-button button-primary--inverted" href='/mod-manager'>Manage active mods</NavButton>
+                            <Button className="home-panel-button">Manage archives</Button>
+                            <Button className="home-panel-button" component={Link} to='/mod-manager' variant="outline">Manage active mods</Button>
                         </div>
 
                     </div>

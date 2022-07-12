@@ -27,7 +27,7 @@ $info-bar-height: 3.5em;
     min-width: 3em;
     min-height: 3em;
 
-    color: white;
+    //color: white;
 }
 
 .archive-info-main {
@@ -65,13 +65,12 @@ $info-bar-height: 3.5em;
 
 .mod-manager-container {
     display: flex;
+    min-height: calc(100vh - $info-bar-height - 0.03em);
 }
 
 .mod-manager-sidebar {
     z-index: 0;
     flex-shrink: 1;
-    
-    min-height: calc(100vh - $info-bar-height);
 
     background-color: colors.$background-primary;
     box-shadow: -1px 0px 2px colors.$shadow-color;

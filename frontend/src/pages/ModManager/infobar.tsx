@@ -1,4 +1,7 @@
-import NavButton from "../../components/NavButton"
+import NavButton from "../../components/NavButton";
+
+import { Button } from '@mantine/core';
+import { Link } from "react-router-dom";
 
 interface IProps {
     name: string,
@@ -10,7 +13,7 @@ export default function InfoBar(props: IProps) {
     return (
         <div className="info-bar">
             <div className="info-bar-button-container">
-                <NavButton className="home-button button-primary" href="/">⌂ Home</NavButton>
+                <Button className="home-button" component={Link} to="/">⌂ Home</Button>
             </div>
             <div className="archive-info-main">
                 <h4 className="archive-info-main__header">Selected Archive</h4>
