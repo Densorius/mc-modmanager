@@ -1,9 +1,9 @@
 {
   "name": "mc-modmanager",
   "outputfilename": "mc-modmanager",
-  "frontend:install": "yarn install",
-  "frontend:build": "yarn run build",
-  "frontend:dev:watcher": "yarn run dev",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm run build",
+  "frontend:dev:watcher": "pnpm run dev",
   "frontend:dev:serverUrl": "http://localhost:3000",
   "author": {
     "name": "Densorius"
