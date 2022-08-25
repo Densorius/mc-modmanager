@@ -4,7 +4,7 @@ import ModManager from './pages/ModManager';
 import { Global } from '@mantine/core'
 
 
-function App() {
+export default function App() {
     return (
         <div className="App">
             <Global styles={(theme) => ({
@@ -26,5 +26,3 @@ function App() {
         </div>
     );
 }
-
-export default App;

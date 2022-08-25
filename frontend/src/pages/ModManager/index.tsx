@@ -12,7 +12,7 @@ const modloader = 'Fabric';
 
 const mods = ["Lorem", "ipsum", "dolor", "sit", "amet"];
 
-function renderMods(): JSX.Element[] {
+const renderMods = () => {
     return mods.map(mod => {
         return <li key={mod} className="mods-panel__list--item">{mod}</li>
     });
