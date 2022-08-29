@@ -2,7 +2,7 @@
 @use '../../styles/abstracts/common';
 
 $table-base-color: hsl(240, 5%, 22%);
-$info-bar-height: 3.5em;
+$info-bar-height: 3.6em;
 
 .info-bar {
     min-height: $info-bar-height;
@@ -65,7 +65,7 @@ $info-bar-height: 3.5em;
 
 .mod-manager-container {
     display: flex;
-    min-height: calc(100vh - $info-bar-height - 0.03em);
+    min-height: calc(100vh - $info-bar-height);
 }
 
 .mod-manager-sidebar {
