@@ -1,3 +1,4 @@
+import { Button, Modal } from "@mantine/core";
 import { useState } from "react";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
@@ -25,11 +26,14 @@ const renderMods = () => {
 
 export default function ModManager() {
 
-    let [selectedMods, setSelectedMods] = useState([] as string[])
+    let [selectedMods, setSelectedMods] = useState([] as string[]);
     let [modsList, setModsList] = useState(mods);
-    let [buttonsDisabled, setButtonsDisabled] = useState(true)
+    let [buttonsDisabled, setButtonsDisabled] = useState(true);
+
+    const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
     const deleteMods = () => {
+        setDeleteModalOpened(false);
         setModsList(currentModsList => currentModsList.filter(mod => !selectedMods.includes(mod)));
     }
 
@@ -37,8 +41,25 @@ export default function ModManager() {
         console.log("Replace");
     }
 
+    const makePlural = () => selectedMods.length > 1 ? 's' : '';
+
     return (
         <div className="mc-background page">
+            <Modal 
+                opened={deleteModalOpened}
+                onClose={() => setDeleteModalOpened(false)}
+                title={`Delete mod${makePlural()}`}
+                className="delete-mods-modal"
+
+                overlayBlur={5}
+            >
+                <p className="delete-mods-modal__text">Are you sure you want to delete the selected mod{makePlural()}?</p>
+                <div className="delete-mods-modal__button-container">
+                    <Button className="delete-mods-modal__yes-button" color="red" onClick={deleteMods}>Yes</Button>
+                    <Button className="delete-mods-modal__no-button" color="green" onClick={() => setDeleteModalOpened(false)}>No</Button>
+                </div>
+            </Modal>
+
             <InfoBar name={name} version={version} modloader={modloader} />
 
             <div className="mod-manager-container">
@@ -54,7 +75,7 @@ export default function ModManager() {
                     </ul>
                 </div>
 
-                <SideBar buttonsDisabled={buttonsDisabled} deletePressed={deleteMods} replacePressed={replaceMods} />
+                <SideBar buttonsDisabled={buttonsDisabled} deletePressed={() => setDeleteModalOpened(true)} replacePressed={replaceMods} />
             </div>
         </div>
     )

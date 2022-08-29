@@ -71,6 +71,11 @@ button, a[target] {
     }
 }
 
+.mantine-Modal-close {
+    border-radius: 0;
+    box-shadow: none;
+}
+
 .button-primary {
     padding-top: 8px;
     padding-bottom: 8px;

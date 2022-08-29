@@ -12,8 +12,8 @@ const style = {
 
 interface IProps {
     buttonsDisabled: boolean,
-    deletePressed?: () => void,
-    replacePressed?: () => void
+    deletePressed: () => void,
+    replacePressed: () => void
 }
 
 export default function SideBar(props: IProps) {
