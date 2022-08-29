@@ -3,6 +3,11 @@ import Checkbox from "../Checkbox";
 
 import './style.scss'
 
+type Range = {
+    first: number | null, 
+    last: number | null
+}
+
 interface Iprops {
     items: string[];
     onChange: (selected: string[]) => void
@@ -18,16 +23,12 @@ export default function SelectList(props: Iprops) {
     useEffect(() => {
 
         let listItems = document.querySelectorAll('li.selectlist--item') as NodeListOf<HTMLLIElement>;
-        let range: {first: number | null, last: number | null} = {
+        let range: Range = {
             first: null,
             last: null
         }
 
-        function swapRangeValues(range: {first: number | null, last: number | null}) {
-            return {first: range.last, last: range.first}
-        }
-
-        function handleSelectChange(event: Event | KeyboardEvent) {
+        const handleSelectChange = (event: Event | KeyboardEvent) => {
 
             let selectedItems: string[] = [];
 
@@ -43,14 +44,16 @@ export default function SelectList(props: Iprops) {
 
             if (shiftPressed) {
                 
-                let indexString = (event.target as HTMLLIElement).dataset.index!
+                let index = parseInt((event.target as HTMLLIElement).dataset.index!);
 
+                // if index of first item is unknown, 
+                // set selected item as highlighted and set it's index as the range's first number
                 if (range.first == null) {
                     (event.target as Element).classList.add(SELECTED_CLASS)
 
-                    range.first = parseInt(indexString)
+                    range.first = index;
                 } else {
-                    range.last = parseInt(indexString)
+                    range.last = index;
                 }
 
                 if (range.first != null && range.last != null) {
@@ -87,7 +90,6 @@ export default function SelectList(props: Iprops) {
         });
 
         return () => {
-
             listItems.forEach(element => {
                 element.removeEventListener('click', handleSelectChange);
             });
@@ -101,7 +103,11 @@ export default function SelectList(props: Iprops) {
     )
 }
 
-function renderItems(items: string[]) {
+const swapRangeValues = (range: Range) => {
+    return {first: range.last, last: range.first}
+}
+
+const renderItems = (items: string[]) => {
     return items.map((item, index) => {
         return (
             <li key={item} data-index={index} className="selectlist--item">{item}</li>

@@ -6,6 +6,11 @@ import SideBar from "./sidebar";
 
 import './style.scss'
 
+type Mod = {
+    name: string,
+    selected: boolean
+}
+
 const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
@@ -21,7 +26,16 @@ const renderMods = () => {
 export default function ModManager() {
 
     let [selectedMods, setSelectedMods] = useState([] as string[])
+    let [modsList, setModsList] = useState(mods);
     let [buttonsDisabled, setButtonsDisabled] = useState(true)
+
+    const deleteMods = () => {
+        setModsList(currentModsList => currentModsList.filter(mod => !selectedMods.includes(mod)));
+    }
+
+    const replaceMods = () => {
+        console.log("Replace");
+    }
 
     return (
         <div className="mc-background page">
@@ -30,17 +44,17 @@ export default function ModManager() {
             <div className="mod-manager-container">
                 <div className="mods-panel">
                     <ul className="mods-panel__list">
-                        <SelectList items={mods} onChange={(selected) => {
-                            setSelectedMods(selected);
+                        <SelectList items={modsList} onChange={(selectedMods) => {
+                            setSelectedMods(selectedMods);
 
-                            if (selected.length > 0) {
+                            if (selectedMods.length > 0) {
                                 setButtonsDisabled(false);
                             }
                         }} />
                     </ul>
                 </div>
 
-                <SideBar buttonsDisabled={buttonsDisabled} />
+                <SideBar buttonsDisabled={buttonsDisabled} deletePressed={deleteMods} replacePressed={replaceMods} />
             </div>
         </div>
     )

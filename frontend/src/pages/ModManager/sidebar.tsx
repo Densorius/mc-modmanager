@@ -10,15 +10,21 @@ const style = {
     },
 }
 
-export default function SideBar(props: {buttonsDisabled: boolean}) {
+interface IProps {
+    buttonsDisabled: boolean,
+    deletePressed?: () => void,
+    replacePressed?: () => void
+}
+
+export default function SideBar(props: IProps) {
 
     return (
         <div className="mod-manager-sidebar">
             <div className="mod-manager-sidebar--container">
                 <Button>Add</Button>
                 <div className="mod-manager-sidebar--divider"></div>
-                <Button disabled={props.buttonsDisabled} sx={style}>Delete</Button>
-                <Button disabled={props.buttonsDisabled} sx={style}>Replace</Button>
+                <Button disabled={props.buttonsDisabled} sx={style} onClick={props.deletePressed}>Delete</Button>
+                <Button disabled={props.buttonsDisabled} sx={style} onClick={props.replacePressed}>Replace</Button>
             </div>
         </div>
     )
