@@ -27,11 +27,21 @@ const renderMods = () => {
 
 export default function ModManager() {
 
-    let [selectedMods, setSelectedMods] = useState([] as string[]);
-    let [modsList, setModsList] = useState(mods);
-    let [buttonsDisabled, setButtonsDisabled] = useState(true);
+    const [selectedMods, setSelectedMods] = useState([] as string[]);
+    const [modsList, setModsList] = useState(mods);
+    const [buttonsDisabled, setButtonsDisabled] = useState(true);
+    const [deleteAllButtonDisabled, setDeleteAllButtonDisabled] = useState(false);
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+    const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
+
+    const deleteAllMods = () => {
+        setDeleteAllModalOpened(false);
+        setModsList(modsList => modsList = []);
+
+        setButtonsDisabled(true);
+        setDeleteAllButtonDisabled(true);
+    }
 
     const deleteMods = () => {
         setDeleteModalOpened(false);
@@ -41,6 +51,7 @@ export default function ModManager() {
 
             if (newModsList.length == 0) {
                 setButtonsDisabled(true);
+                setDeleteAllButtonDisabled(true);
             }
 
             return newModsList
@@ -66,6 +77,17 @@ export default function ModManager() {
                 noPressed={() => setDeleteModalOpened(false)}
             />
 
+            <ConfirmModal 
+                title="Delete all mods"
+                text="Are you sure you want to delete all mods?"
+
+                opened={deleteAllModalOpened}
+                onClose={() => setDeleteAllModalOpened(false)}
+
+                yesPressed={deleteAllMods}
+                noPressed={() => setDeleteAllModalOpened(false)}
+            />
+
             <InfoBar name={name} version={version} modloader={modloader} />
 
             <div className="mod-manager-container">
@@ -81,7 +103,12 @@ export default function ModManager() {
                     </ul>
                 </div>
 
-                <SideBar buttonsDisabled={buttonsDisabled} deletePressed={() => setDeleteModalOpened(true)} replacePressed={replaceMods} />
+                <SideBar 
+                    buttonsDisabled={buttonsDisabled}
+                    deleteAllButtonDisabled={deleteAllButtonDisabled}
+                    deleteAllPressed={() => setDeleteAllModalOpened(true)}
+                    deletePressed={() => setDeleteModalOpened(true)} 
+                    replacePressed={replaceMods} />
             </div>
         </div>
     )
