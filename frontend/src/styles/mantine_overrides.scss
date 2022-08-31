@@ -1,0 +1,18 @@
+@use 'abstracts/common';
+@use 'abstracts/colors';
+
+.mantine-Modal-close {
+    &:hover {
+        background-color: darken(colors.$background-primary, 5%);
+    }
+
+    background-color: lighten(colors.$background-primary, 3%);
+}
+
+.mantine-Modal-modal {
+    background-color: colors.$background-primary;
+}
+
+.mantine-Modal-title {
+    font-family: Rubik;
+}

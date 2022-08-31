@@ -1,4 +1,4 @@
-import { Button, Modal } from "@mantine/core";
+import { Button, Modal, useMantineTheme } from "@mantine/core";
 import { useState } from "react";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
@@ -32,6 +32,8 @@ export default function ModManager() {
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
+    const theme = useMantineTheme();
+
     const deleteMods = () => {
         setDeleteModalOpened(false);
         setModsList(currentModsList => currentModsList.filter(mod => !selectedMods.includes(mod)));
@@ -45,12 +47,13 @@ export default function ModManager() {
 
     return (
         <div className="mc-background page">
-            <Modal 
+            <Modal
                 opened={deleteModalOpened}
                 onClose={() => setDeleteModalOpened(false)}
                 title={`Delete mod${makePlural()}`}
                 className="delete-mods-modal"
 
+                overlayColor={theme.colors.dark[7]}
                 overlayBlur={5}
             >
                 <p className="delete-mods-modal__text">Are you sure you want to delete the selected mod{makePlural()}?</p>

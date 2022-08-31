@@ -1,6 +1,8 @@
 @use 'abstracts/common';
 @use 'abstracts/colors';
 
+@use './mantine_overrides' as *;
+
 // html,
 // body {
 //   padding: 0;
@@ -69,11 +71,6 @@ button, a[target] {
     &:disabled {
         box-shadow: none;
     }
-}
-
-.mantine-Modal-close {
-    border-radius: 0;
-    box-shadow: none;
 }
 
 .button-primary {
