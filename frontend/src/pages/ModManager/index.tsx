@@ -1,5 +1,6 @@
 import { Button, Modal, useMantineTheme } from "@mantine/core";
 import { useState } from "react";
+import ConfirmModal from "../../components/ConfirmModal";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
@@ -32,11 +33,18 @@ export default function ModManager() {
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
-    const theme = useMantineTheme();
-
     const deleteMods = () => {
         setDeleteModalOpened(false);
-        setModsList(currentModsList => currentModsList.filter(mod => !selectedMods.includes(mod)));
+
+        setModsList(currentModsList => {
+            let newModsList = currentModsList.filter(mod => !selectedMods.includes(mod));
+
+            if (newModsList.length == 0) {
+                setButtonsDisabled(true);
+            }
+
+            return newModsList
+        });
     }
 
     const replaceMods = () => {
@@ -47,21 +55,16 @@ export default function ModManager() {
 
     return (
         <div className="mc-background page">
-            <Modal
+            <ConfirmModal 
+                title={`Delete mod${makePlural()}`}
+                text={`Are you sure you want to delete the selected mod${makePlural()}?`}
+
                 opened={deleteModalOpened}
                 onClose={() => setDeleteModalOpened(false)}
-                title={`Delete mod${makePlural()}`}
-                className="delete-mods-modal"
 
-                overlayColor={theme.colors.dark[7]}
-                overlayBlur={5}
-            >
-                <p className="delete-mods-modal__text">Are you sure you want to delete the selected mod{makePlural()}?</p>
-                <div className="delete-mods-modal__button-container">
-                    <Button className="delete-mods-modal__yes-button" color="red" onClick={deleteMods}>Yes</Button>
-                    <Button className="delete-mods-modal__no-button" color="green" onClick={() => setDeleteModalOpened(false)}>No</Button>
-                </div>
-            </Modal>
+                yesPressed={deleteMods}
+                noPressed={() => setDeleteModalOpened(false)}
+            />
 
             <InfoBar name={name} version={version} modloader={modloader} />
 

@@ -131,23 +131,3 @@ $info-bar-height: 3.6em;
 .highlight {
     color: hsl(28, 86%, 53%);
 }
-
-.delete-mods-modal {
-    &__text {
-        margin-bottom: 2em;
-    }
-
-    &__yes-button {
-        margin-right: 0.5em;
-    }
-
-    &__no-button {
-        margin-left: 0.5em;
-    }
-
-    &__button-container {
-        width: max-content;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
