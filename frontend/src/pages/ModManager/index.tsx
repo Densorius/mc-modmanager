@@ -17,7 +17,7 @@ const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
 
-const mods = ["Lorem", "ipsum", "dolor", "sit", "amet"];
+const mods = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet'];
 
 const renderMods = () => {
     return mods.map(mod => {
@@ -35,6 +35,27 @@ export default function ModManager() {
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
 
+    // TOOD: filesystem interaction
+    const addMods = () => {
+        const modsArray = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscinf', 'elit', 'sed', 'do'];
+        const randomIndex = Math.floor(Math.random() * modsArray.length);
+
+        const modToAdd = modsArray[randomIndex];
+
+        let timeOut = 0;
+
+        while (timeOut != 50) {
+            timeOut++;
+
+            if (!modsList.includes(modToAdd)) {
+                setModsList(oldModsList => [...oldModsList, modsArray[randomIndex]]);
+
+                break;
+            }
+        }
+    }
+
+    // TOOD: filesystem interaction
     const deleteAllMods = () => {
         setDeleteAllModalOpened(false);
         setModsList(modsList => modsList = []);
@@ -105,6 +126,7 @@ export default function ModManager() {
 
                 <SideBar 
                     buttonsDisabled={buttonsDisabled}
+                    addPressed={addMods}
                     deleteAllButtonDisabled={deleteAllButtonDisabled}
                     deleteAllPressed={() => setDeleteAllModalOpened(true)}
                     deletePressed={() => setDeleteModalOpened(true)} 

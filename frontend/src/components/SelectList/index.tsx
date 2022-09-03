@@ -90,11 +90,13 @@ export default function SelectList(props: Iprops) {
         });
 
         return () => {
+            console.log("unmount");
+
             listItems.forEach(element => {
                 element.removeEventListener('click', handleSelectChange);
             });
         }
-    }, []);
+    }, props.items);
 
     return (
         <ul className="selectlist">
