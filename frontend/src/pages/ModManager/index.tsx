@@ -38,20 +38,25 @@ export default function ModManager() {
     // TOOD: filesystem interaction
     const addMods = () => {
         const modsArray = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscinf', 'elit', 'sed', 'do'];
-        const randomIndex = Math.floor(Math.random() * modsArray.length);
-
-        const modToAdd = modsArray[randomIndex];
-
         let timeOut = 0;
+        
+        while (timeOut != 500) {
+            const randomIndex = Math.floor(Math.random() * modsArray.length);
 
-        while (timeOut != 50) {
+            const modToAdd = modsArray[randomIndex];
+
             timeOut++;
 
             if (!modsList.includes(modToAdd)) {
-                setModsList(oldModsList => [...oldModsList, modsArray[randomIndex]]);
+                setModsList(oldModsList => [...oldModsList, modToAdd]);
 
                 break;
             }
+        }
+        
+        // state has't updated so length is still one less.
+        if (modsList.length == 0) {
+            setDeleteAllButtonDisabled(false);
         }
     }
 

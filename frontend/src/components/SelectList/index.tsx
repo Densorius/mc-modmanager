@@ -20,6 +20,8 @@ let shiftPressed = false;
 
 export default function SelectList(props: Iprops) {
 
+    const dependencyList = [props.items.length];
+
     useEffect(() => {
 
         let listItems = document.querySelectorAll('li.selectlist--item') as NodeListOf<HTMLLIElement>;
@@ -90,13 +92,11 @@ export default function SelectList(props: Iprops) {
         });
 
         return () => {
-            console.log("unmount");
-
             listItems.forEach(element => {
                 element.removeEventListener('click', handleSelectChange);
             });
         }
-    }, props.items);
+    }, dependencyList);
 
     return (
         <ul className="selectlist">
