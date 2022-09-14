@@ -45,7 +45,7 @@ export default function ModManager() {
 
             const modToAdd = modsArray[randomIndex];
 
-            timeOut++;
+            timeOut++; 
 
             if (!modsList.includes(modToAdd)) {
                 setModsList(oldModsList => [...oldModsList, modToAdd]);
