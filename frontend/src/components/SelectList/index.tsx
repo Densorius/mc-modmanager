@@ -9,6 +9,7 @@ type Range = {
 }
 
 interface Iprops {
+    className: string;
     items: string[];
     onChange: (selected: string[]) => void
 }
@@ -72,7 +73,7 @@ export default function SelectList(props: Iprops) {
             }
 
             if (!shiftPressed) {
-                let item = event.target as HTMLLIElement
+                let item = event.target as HTMLLIElement 
 
                 item.classList.add(SELECTED_CLASS);
                 range.first = parseInt(item.dataset.index!);
@@ -99,7 +100,7 @@ export default function SelectList(props: Iprops) {
     }, dependencyList);
 
     return (
-        <ul className="selectlist">
+        <ul className={`selectlist ${props.className}`}>
             {renderItems(props.items)}
         </ul>
     )

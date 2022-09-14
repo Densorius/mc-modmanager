@@ -24,7 +24,7 @@ export default function SideBar(props: IProps) {
     return (
         <div className="mod-manager-sidebar">
             <div className="mod-manager-sidebar--container">
-                <Button onClick={props.addPressed}>Add</Button>
+                <Button onClick={props.addPressed }>Add</Button>
                 <Button disabled={props.deleteAllButtonDisabled} sx={style} color="red" onClick={props.deleteAllPressed}>Delete all</Button>
                 <div className="mod-manager-sidebar--divider"></div>
                 <Button disabled={props.buttonsDisabled} sx={style} onClick={props.deletePressed}>Delete</Button>

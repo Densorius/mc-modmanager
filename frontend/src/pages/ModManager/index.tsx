@@ -90,6 +90,28 @@ export default function ModManager() {
 
     const makePlural = () => selectedMods.length > 1 ? 's' : '';
 
+    const displayModsOrEmpty = () => {
+        if (modsList.length > 0) {
+            return (
+                <SelectList className="mods-panel__list" items={modsList} onChange={(selectedMods) => {
+                    setSelectedMods(selectedMods);
+
+                    if (selectedMods.length > 0) {
+                        setButtonsDisabled(false);
+                    }
+                }} />
+            );
+        } else {
+            return (
+                <>
+                    <p>Mods directory is empty.</p>
+                    <br />
+                    <p>Press the add button to start adding mods.</p>
+                </>
+            );
+        }
+    }
+
     return (
         <div className="mc-background page">
             <ConfirmModal 
@@ -118,15 +140,7 @@ export default function ModManager() {
 
             <div className="mod-manager-container">
                 <div className="mods-panel">
-                    <ul className="mods-panel__list">
-                        <SelectList items={modsList} onChange={(selectedMods) => {
-                            setSelectedMods(selectedMods);
-
-                            if (selectedMods.length > 0) {
-                                setButtonsDisabled(false);
-                            }
-                        }} />
-                    </ul>
+                    {displayModsOrEmpty()}
                 </div>
 
                 <SideBar 
@@ -135,7 +149,8 @@ export default function ModManager() {
                     deleteAllButtonDisabled={deleteAllButtonDisabled}
                     deleteAllPressed={() => setDeleteAllModalOpened(true)}
                     deletePressed={() => setDeleteModalOpened(true)} 
-                    replacePressed={replaceMods} />
+                    replacePressed={replaceMods} 
+                />
             </div>
         </div>
     )
