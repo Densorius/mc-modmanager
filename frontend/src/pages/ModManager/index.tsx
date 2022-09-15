@@ -1,10 +1,12 @@
 import { Button, Modal, useMantineTheme } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmModal from "../../components/ConfirmModal";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
+
+import { GetUserHomeDir, GetMods } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 
@@ -28,12 +30,23 @@ const renderMods = () => {
 export default function ModManager() {
 
     const [selectedMods, setSelectedMods] = useState([] as string[]);
-    const [modsList, setModsList] = useState(mods);
+    const [modsList, setModsList] = useState([] as string[]);
     const [buttonsDisabled, setButtonsDisabled] = useState(true);
     const [deleteAllButtonDisabled, setDeleteAllButtonDisabled] = useState(false);
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
+
+    useEffect(() => {
+        const getData = async () => {
+            const userDirectory = await GetUserHomeDir();
+            const mods = await GetMods(userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`);
+
+            setModsList(mods);
+        }
+
+        getData();
+    }, [])
 
     // TOOD: filesystem interaction
     const addMods = () => {

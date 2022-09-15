@@ -7,6 +7,8 @@ import { MantineProvider, MantineThemeOverride } from '@mantine/core'
 
 import './styles/globals.scss';
 
+import { Greet } from '../wailsjs/go/backend/App';
+
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
@@ -29,6 +31,8 @@ const theme: MantineThemeOverride = {
     },
     primaryColor: 'orange-primary',
 }
+
+Greet("Densorius").then(msg => console.log(msg));
 
 root.render(
     <React.StrictMode>
