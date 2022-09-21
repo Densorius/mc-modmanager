@@ -56,14 +56,17 @@ export default function ModManager() {
 
         const files = await OpenFileDialog();
 
-        files.forEach(filePath => {
-            const filePathSplit = filePath.split('\\');
-            const fileName = filePathSplit[filePathSplit.length - 1];
-
-            filesNames = [...filesNames, fileName];
-        });
-
-        setModsList(oldModsList => [...oldModsList, ...filesNames]);
+        // files is null when user has cancelled the dialog
+        if (files != null) {
+            files.forEach(filePath => {
+                const filePathSplit = filePath.split('\\');
+                const fileName = filePathSplit[filePathSplit.length - 1];
+    
+                filesNames = [...filesNames, fileName];
+            });
+    
+            setModsList(oldModsList => [...oldModsList, ...filesNames]);
+        }
     }
 
     const addModsDemo = () => {
