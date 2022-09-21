@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -55,4 +57,22 @@ func (a *App) GetUserHomeDir() string {
 	}
 	
 	return userHomeDirectory
+}
+
+func (a *App) OpenFileDialog() []string {
+	files, err := runtime.OpenMultipleFilesDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Select mods to add",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: ".jar",
+				Pattern: "*.jar",
+			},
+		},
+	})
+
+	if err != nil {
+		return nil
+	}
+
+	return files
 }

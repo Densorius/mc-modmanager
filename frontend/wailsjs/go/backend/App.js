@@ -13,3 +13,7 @@ export function GetUserHomeDir() {
 export function Greet(arg1) {
   return window['go']['backend']['App']['Greet'](arg1);
 }
+
+export function OpenFileDialog() {
+  return window['go']['backend']['App']['OpenFileDialog']();
+}

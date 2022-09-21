@@ -6,3 +6,5 @@ export function GetMods(arg1:string):Promise<Array<string>>;
 export function GetUserHomeDir():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function OpenFileDialog():Promise<Array<string>>;

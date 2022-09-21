@@ -1,12 +1,12 @@
 import { Button, Modal, useMantineTheme } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ConfirmModal from "../../components/ConfirmModal";
 import NavButton from "../../components/NavButton";
 import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
 
-import { GetUserHomeDir, GetMods } from '../../../wailsjs/go/backend/App';
+import { GetUserHomeDir, GetMods, OpenFileDialog } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 
@@ -37,6 +37,8 @@ export default function ModManager() {
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
 
+    const openFileInput = useRef<HTMLInputElement>(null);
+
     useEffect(() => {
         const getData = async () => {
             const userDirectory = await GetUserHomeDir();
@@ -46,10 +48,25 @@ export default function ModManager() {
         }
 
         getData();
-    }, [])
+    }, []);
 
     // TOOD: filesystem interaction
-    const addMods = () => {
+    const addMods = async () => {
+        let filesNames: string[] = [];
+
+        const files = await OpenFileDialog();
+
+        files.forEach(filePath => {
+            const filePathSplit = filePath.split('\\');
+            const fileName = filePathSplit[filePathSplit.length - 1];
+
+            filesNames = [...filesNames, fileName];
+        });
+
+        setModsList(oldModsList => [...oldModsList, ...filesNames]);
+    }
+
+    const addModsDemo = () => {
         const modsArray = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscinf', 'elit', 'sed', 'do'];
         let timeOut = 0;
         
@@ -93,7 +110,7 @@ export default function ModManager() {
                 setDeleteAllButtonDisabled(true);
             }
 
-            return newModsList
+            return newModsList;
         });
     }
 
@@ -127,6 +144,8 @@ export default function ModManager() {
 
     return (
         <div className="mc-background page">
+            <input type="file" id="manager-open-file" ref={openFileInput} multiple />
+
             <ConfirmModal 
                 title={`Delete mod${makePlural()}`}
                 text={`Are you sure you want to delete the selected mod${makePlural()}?`}
