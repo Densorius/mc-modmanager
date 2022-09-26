@@ -2,6 +2,15 @@
 
 An application for managing minecraft mods.
 
+Currently a user can see their currently installed mods as well as adding mods.
+
+## Todo
+
+- delete (all) mod(s)
+- replace mod(s)
+- read archive info json
+- modify values inside archive info json
+
 ## Live Development
 
 To run in live development mode, run `wails dev` in the project directory. In another terminal, go into the `frontend`
