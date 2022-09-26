@@ -6,7 +6,7 @@ import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
 
-import { GetUserHomeDir, GetMods, OpenFileDialog } from '../../../wailsjs/go/backend/App';
+import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFiles } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 
@@ -27,6 +27,12 @@ const renderMods = () => {
     });
 }
 
+const getFileNameFromPath = (path: string) => {
+    const pathSplitted = path.split('\\');
+
+    return pathSplitted[pathSplitted.length - 1];
+}
+
 export default function ModManager() {
 
     const [selectedMods, setSelectedMods] = useState([] as string[]);
@@ -38,11 +44,16 @@ export default function ModManager() {
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
 
     const openFileInput = useRef<HTMLInputElement>(null);
+    const [modsDirectory, setModsDirectory] = useState("");
 
     useEffect(() => {
         const getData = async () => {
             const userDirectory = await GetUserHomeDir();
-            const mods = await GetMods(userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`);
+            const modsDir = userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`;
+
+            setModsDirectory(modsDir);
+
+            const mods = await GetMods(modsDir);
 
             setModsList(mods);
         }
@@ -56,17 +67,29 @@ export default function ModManager() {
 
         const files = await OpenFileDialog();
 
-        // files is null when user has cancelled the dialog
-        if (files != null) {
-            files.forEach(filePath => {
-                const filePathSplit = filePath.split('\\');
-                const fileName = filePathSplit[filePathSplit.length - 1];
-    
-                filesNames = [...filesNames, fileName];
-            });
-    
-            setModsList(oldModsList => [...oldModsList, ...filesNames]);
+        // user has cancelled the open file dialog
+        if (files == null) {
+            console.log('user has cancelled file dialog');
+            
+            return;
         }
+
+        const movedFiles = await MoveFiles(files, modsDirectory);
+
+        if (movedFiles == null) {
+            console.log('something happened');
+
+            return;
+        }
+
+        setModsList(oldModsList => [...oldModsList, ...movedFiles]);
+
+        // files is null when user has cancelled the dialog
+        // if (files != null) {
+        //     //files.forEach(filePath => filesNames = [...filesNames, getFileNameFromPath(filePath)]);
+    
+        //     setModsList(oldModsList => [...oldModsList, ...filesNames]);
+        // }
     }
 
     const addModsDemo = () => {
