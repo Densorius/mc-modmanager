@@ -44,8 +44,9 @@ func (a *App) GetMods(path string) []string {
 
 	for _, file := range files {
 		strSplitted := strings.Split(file.Name(), ".")
+		extension   := strSplitted[len(strSplitted) - 1]
 
-		if strSplitted[len(strSplitted) - 1] == "jar" {
+		if extension == "jar" || extension == "txt" {
 			mods = append(mods, file.Name())
 		}
 	}
@@ -75,8 +76,12 @@ func (a *App) OpenFileDialog() []string {
 		Title: "Select mods to add",
 		Filters: []runtime.FileFilter{
 			{
-				DisplayName: ".jar",
+				DisplayName: "Jar files",
 				Pattern: "*.jar",
+			},
+			{
+				DisplayName: "Text files",
+				Pattern: "*.txt",
 			},
 		},
 	})
@@ -88,42 +93,38 @@ func (a *App) OpenFileDialog() []string {
 	return files
 }
 
-// Moves a given array of files to a selected location.
-//
-// Returns a slice of the filenames that were moved.
-func (a *App) MoveFiles(source []string, destination string) []string {
-	var movedFiles = []string{}
-
-	for _, file := range source {
-		// move file to new location
-		err := os.Rename(file, fmt.Sprintf("%s\\%s", destination, getFileNameFromPath(file)))
-
-		if err != nil {
-			fmt.Println(err);
-			return nil
-		}
-
-		movedFiles = append(movedFiles, getFileNameFromPath(file))
-	}
-
-	return movedFiles
-}
-
-// Moves a file to a given location
+// Moves a file to a given location.
 //
 // returns the name of the file that was moved.
 func (a *App) MoveFile(source string, destination string) string {
 	err := os.Rename(source, fmt.Sprintf("%s\\%s", destination, getFileNameFromPath(source)))
 
-	if err == nil {
+	if err != nil {
+		fmt.Println(err)
+
 		return ""
 	}
 
-	return getFileNameFromPath(destination)
+	return getFileNameFromPath(source)
 }
 
 func getFileNameFromPath(path string) string {
 	pathSplit := strings.Split(path, "\\")
 
 	return pathSplit[len(pathSplit) - 1]
+}
+
+// Deletes the specified file.
+//
+// Returns wheter the deletion is succesfull (true) or not (false).
+func (a *App) DeleteFile(file string) bool {
+	err := os.Remove(file)
+
+	if (err == nil) {
+		fmt.Printf("Couldn't delete file because of:\n%v\n", err)
+
+		return false
+	}
+
+	return true
 }

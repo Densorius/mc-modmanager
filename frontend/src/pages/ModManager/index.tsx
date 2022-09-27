@@ -6,7 +6,7 @@ import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
 
-import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFiles } from '../../../wailsjs/go/backend/App';
+import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 
@@ -70,26 +70,30 @@ export default function ModManager() {
         // user has cancelled the open file dialog
         if (files == null) {
             console.log('user has cancelled file dialog');
-            
-            return;
-        }
-
-        const movedFiles = await MoveFiles(files, modsDirectory);
-
-        if (movedFiles == null) {
-            console.log('something happened');
 
             return;
         }
+
+        const movedFiles: string[] = [];
+
+        for (const file of files) {
+            console.log(file);
+            console.log(modsDirectory);
+            const movedFile = await MoveFile(file, modsDirectory);
+
+            console.log('moved: ', movedFile);
+
+            movedFiles.push(movedFile);
+        }
+        // const movedFiles = await MoveFiles(files, modsDirectory);
+
+        // if (movedFiles == null) {
+        //     console.log('something happened');
+
+        //     return;
+        // }
 
         setModsList(oldModsList => [...oldModsList, ...movedFiles]);
-
-        // files is null when user has cancelled the dialog
-        // if (files != null) {
-        //     //files.forEach(filePath => filesNames = [...filesNames, getFileNameFromPath(filePath)]);
-    
-        //     setModsList(oldModsList => [...oldModsList, ...filesNames]);
-        // }
     }
 
     const addModsDemo = () => {
