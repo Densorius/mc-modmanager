@@ -14,6 +14,30 @@ type App struct {
 	ctx context.Context
 }
 
+// The result from opening a open file dialog. The following status codes exists
+//
+// open-file-dialog-error: Files is empty, Message contains the error
+//
+// open-file-dialog-cancelled: Files is empty, Message is empty
+//
+// open-file-dialog-success: Files contains a array of paths, Message is empty
+type OpenFileDialogResult struct {
+	Files      []string `json:"Files"`
+	Message    string `json:"Message"`
+	StatusCode string `json:"StatusCode"`
+}
+
+type MoveFileResult struct {
+	File       string `json:"File"`
+	Message    string `json:"Message"`
+	StatusCode string `json:"StatusCode"`
+}
+
+type DeleteFileResult struct {
+	Message    string `json:"Message"`
+	StatusCode string `json:"StatusCode"`
+}
+
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -71,7 +95,7 @@ func (a *App) GetUserHomeDir() string {
 // Opens a open file dialog for the user to select .jar files.
 //
 // returns: array of strings containing paths of the selected files.
-func (a *App) OpenFileDialog() []string {
+func (a *App) OpenFileDialog() OpenFileDialogResult {
 	files, err := runtime.OpenMultipleFilesDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Select mods to add",
 		Filters: []runtime.FileFilter{
@@ -87,31 +111,47 @@ func (a *App) OpenFileDialog() []string {
 	})
 
 	if err != nil {
-		return nil
+		return OpenFileDialogResult{
+			Files: nil,
+			Message: err.Error(),
+			StatusCode: "open-file-dialog-error",
+		}
 	}
 
-	return files
+	if files == nil {
+		return OpenFileDialogResult{
+			Files: nil,
+			Message: "",
+			StatusCode: "open-file-dialog-cancelled",
+		}
+	}
+
+	return OpenFileDialogResult{
+		Files: files,
+		Message: "",
+		StatusCode: "open-file-dialog-success",
+	}
 }
 
 // Moves a file to a given location.
 //
 // returns the name of the file that was moved.
-func (a *App) MoveFile(source string, destination string) string {
-	err := os.Rename(source, fmt.Sprintf("%s\\%s", destination, getFileNameFromPath(source)))
+func (a *App) MoveFile(source string, destination string) MoveFileResult {
+	err := os.Rename(source, fmt.Sprintf("%s\\%s", destination, getFileNameFromPath(&source)))
 
 	if err != nil {
-		fmt.Println(err)
-
-		return ""
+		return MoveFileResult{
+			File: "",
+			Message: err.Error(),
+			StatusCode: "move-file-error",
+		}
 	}
 
-	return getFileNameFromPath(source)
-}
-
-func getFileNameFromPath(path string) string {
-	pathSplit := strings.Split(path, "\\")
-
-	return pathSplit[len(pathSplit) - 1]
+	return MoveFileResult{
+		File: getFileNameFromPath(&source),
+		Message: "",
+		StatusCode: "move-file-success",
+	}
 }
 
 // Deletes the specified file.
@@ -127,4 +167,10 @@ func (a *App) DeleteFile(file string) bool {
 	}
 
 	return true
+}
+
+func getFileNameFromPath(path *string) string {
+	pathSplit := strings.Split(*path, "\\")
+
+	return pathSplit[len(pathSplit) - 1]
 }

@@ -63,37 +63,48 @@ export default function ModManager() {
 
     // TOOD: filesystem interaction
     const addMods = async () => {
-        let filesNames: string[] = [];
+        const openFileResult = await OpenFileDialog();
 
-        const files = await OpenFileDialog();
+        if (openFileResult.StatusCode === 'open-file-dialog-cancelled') {
+            return;
+        }
 
-        // user has cancelled the open file dialog
-        if (files == null) {
-            console.log('user has cancelled file dialog');
+        if (openFileResult.StatusCode === 'open-file-dialog-error') {
+            // TODO: tell user a error occured
+            console.log('something happened: ', openFileResult.Message);
 
             return;
         }
 
-        const movedFiles: string[] = [];
+        if (openFileResult.StatusCode === 'open-file-dialog-success') {
+            const movedFiles: string[] = [];
 
-        for (const file of files) {
-            console.log(file);
-            console.log(modsDirectory);
-            const movedFile = await MoveFile(file, modsDirectory);
+            for (const file of openFileResult.Files) {
+                if (modsList.includes(getFileNameFromPath(file))) {
+                    // TODO: tell user they tried to add a mod that already exists
+                    console.log('Mod already in mods list.');
 
-            console.log('moved: ', movedFile);
+                    continue;
+                }
 
-            movedFiles.push(movedFile);
+                const moveFileResult = await MoveFile(file, modsDirectory);
+
+                if (moveFileResult.StatusCode === 'move-file-error') {
+                    // TODO: tell user a error occured
+                    console.log('Something happened: ', moveFileResult.Message);
+                    
+                    break;
+                }
+
+                if (moveFileResult.StatusCode === 'file-already-exists-error') {
+                    console.log("mod already included");
+                    break;
+                }
+
+                movedFiles.push(moveFileResult.File);
+            }
+            setModsList(oldModsList => [...oldModsList, ...movedFiles]);
         }
-        // const movedFiles = await MoveFiles(files, modsDirectory);
-
-        // if (movedFiles == null) {
-        //     console.log('something happened');
-
-        //     return;
-        // }
-
-        setModsList(oldModsList => [...oldModsList, ...movedFiles]);
     }
 
     const addModsDemo = () => {
