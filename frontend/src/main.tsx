@@ -32,8 +32,6 @@ const theme: MantineThemeOverride = {
     primaryColor: 'orange-primary',
 }
 
-Greet("Densorius").then(msg => console.log(msg));
-
 root.render(
     <React.StrictMode>
         <BrowserRouter>
