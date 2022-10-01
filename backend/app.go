@@ -114,7 +114,7 @@ func (a *App) OpenFileDialog() OpenFileDialogResult {
 		return OpenFileDialogResult{
 			Files: nil,
 			Message: err.Error(),
-			StatusCode: "open-file-dialog-error",
+			StatusCode: "open-file-dialog/error",
 		}
 	}
 
@@ -122,14 +122,14 @@ func (a *App) OpenFileDialog() OpenFileDialogResult {
 		return OpenFileDialogResult{
 			Files: nil,
 			Message: "",
-			StatusCode: "open-file-dialog-cancelled",
+			StatusCode: "open-file-dialog/cancelled",
 		}
 	}
 
 	return OpenFileDialogResult{
 		Files: files,
 		Message: "",
-		StatusCode: "open-file-dialog-success",
+		StatusCode: "open-file-dialog/success",
 	}
 }
 
@@ -143,30 +143,34 @@ func (a *App) MoveFile(source string, destination string) MoveFileResult {
 		return MoveFileResult{
 			File: "",
 			Message: err.Error(),
-			StatusCode: "move-file-error",
+			StatusCode: "file-move/error",
 		}
 	}
 
 	return MoveFileResult{
 		File: getFileNameFromPath(&source),
 		Message: "",
-		StatusCode: "move-file-success",
+		StatusCode: "file-move/success",
 	}
 }
 
 // Deletes the specified file.
 //
 // Returns wheter the deletion is succesfull (true) or not (false).
-func (a *App) DeleteFile(file string) bool {
+func (a *App) DeleteFile(file string) DeleteFileResult {
 	err := os.Remove(file)
 
-	if (err == nil) {
-		fmt.Printf("Couldn't delete file because of:\n%v\n", err)
-
-		return false
+	if (err != nil) {
+		return DeleteFileResult{
+			Message: err.Error(),
+			StatusCode: "deletion/error",
+		}
 	}
-
-	return true
+ 
+	return DeleteFileResult{
+		Message: "",
+		StatusCode: "deletion/success",
+	}
 }
 
 func getFileNameFromPath(path *string) string {

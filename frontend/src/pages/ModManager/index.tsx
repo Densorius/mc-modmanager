@@ -6,7 +6,7 @@ import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
 
-import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile } from '../../../wailsjs/go/backend/App';
+import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 
@@ -69,14 +69,14 @@ export default function ModManager() {
             return;
         }
 
-        if (openFileResult.StatusCode === 'open-file-dialog-error') {
+        if (openFileResult.StatusCode === 'open-file-dialog/error') {
             // TODO: tell user a error occured
             console.log('something happened: ', openFileResult.Message);
 
             return;
         }
 
-        if (openFileResult.StatusCode === 'open-file-dialog-success') {
+        if (openFileResult.StatusCode === 'open-file-dialog/success') {
             const movedFiles: string[] = [];
 
             for (const file of openFileResult.Files) {
@@ -89,19 +89,16 @@ export default function ModManager() {
 
                 const moveFileResult = await MoveFile(file, modsDirectory);
 
-                if (moveFileResult.StatusCode === 'move-file-error') {
+                if (moveFileResult.StatusCode === 'file-move/error') {
                     // TODO: tell user a error occured
                     console.log('Something happened: ', moveFileResult.Message);
                     
                     break;
                 }
 
-                if (moveFileResult.StatusCode === 'file-already-exists-error') {
-                    console.log("mod already included");
-                    break;
+                if (moveFileResult.StatusCode === 'file-move/success') {
+                    movedFiles.push(moveFileResult.File);
                 }
-
-                movedFiles.push(moveFileResult.File);
             }
             setModsList(oldModsList => [...oldModsList, ...movedFiles]);
         }
@@ -140,19 +137,42 @@ export default function ModManager() {
         setDeleteAllButtonDisabled(true);
     }
 
-    const deleteMods = () => {
+    const deleteMods = async () => {
+        // User agreed to delete selected mods.
+
         setDeleteModalOpened(false);
 
-        setModsList(currentModsList => {
-            let newModsList = currentModsList.filter(mod => !selectedMods.includes(mod));
+        const modsToDelete = modsList.filter(mod => selectedMods.includes(mod));
+        let deletedMods: string[] = [];
 
-            if (newModsList.length == 0) {
-                setButtonsDisabled(true);
-                setDeleteAllButtonDisabled(true);
+        for (const modToDelete of modsToDelete) {
+            const deleteResult = await DeleteFile(`${modsDirectory}\\${modToDelete}`);
+
+            if (deleteResult.StatusCode === 'deletion/error') {
+                console.log('Error deleting file: ', deleteResult.Message);
+                continue; // error, skip to next mod to delete
             }
 
-            return newModsList;
-        });
+            if (deleteResult.StatusCode === 'deletion/success') {
+                // add the deleted mod to deletedMods array
+                deletedMods = [...deletedMods, modToDelete];
+            }
+        }
+
+        if (deletedMods.length > 0) {
+            setModsList(currentModsList => {
+                let newModsList = currentModsList.filter(mod => !deletedMods.includes(mod));
+
+                if (newModsList.length === 0) {
+                    setButtonsDisabled(true);
+                    setDeleteAllButtonDisabled(true);
+                }
+
+                return newModsList;
+            });
+        } else {
+            console.error('No mods where deleted...');
+        }
     }
 
     const replaceMods = () => {
