@@ -12,6 +12,8 @@ Currently users can:
 - replace mod(s)
 - read archive info json
 - modify values inside archive info json
+- show errors to user
+- show progess bar when adding, deleting or replacing mods.
 
 ## Live Development
 
