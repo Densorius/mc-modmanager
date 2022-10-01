@@ -23,8 +23,8 @@ type App struct {
 // open-file-dialog-success: Files contains a array of paths, Message is empty
 type OpenFileDialogResult struct {
 	Files      []string `json:"Files"`
-	Message    string `json:"Message"`
-	StatusCode string `json:"StatusCode"`
+	Message    string   `json:"Message"`
+	StatusCode string   `json:"StatusCode"`
 }
 
 type MoveFileResult struct {

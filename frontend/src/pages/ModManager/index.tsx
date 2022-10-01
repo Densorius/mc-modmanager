@@ -129,12 +129,37 @@ export default function ModManager() {
     }
 
     // TOOD: filesystem interaction
-    const deleteAllMods = () => {
+    const deleteAllMods = async () => {
         setDeleteAllModalOpened(false);
-        setModsList(modsList => modsList = []);
+        
+        // make 
+        let deletedMods: string[] = [];
+        let errorMessages: string[] = [];
 
-        setButtonsDisabled(true);
-        setDeleteAllButtonDisabled(true);
+        for (const mod of modsList) {
+            const deleteResult = await DeleteFile(`${modsDirectory}\\${mod}`);
+
+            if (deleteResult.StatusCode === 'deletion/error') {
+                errorMessages = [...errorMessages, deleteResult.Message];
+            }
+
+            if (deleteResult.StatusCode === 'deletion/success') {
+                deletedMods = [...deletedMods, mod];
+            }
+        }
+
+        if (modsList.length === deletedMods.length) {
+            setModsList(modsList => modsList = []);
+
+            setButtonsDisabled(true);
+            setDeleteAllButtonDisabled(true);
+        } else {
+            // not all mods where deleted.
+            console.log("Error(s) while deleting mods:");
+            errorMessages.forEach(message => console.log(message));
+
+            setModsList(modsList => modsList.filter(mod => !deletedMods.includes(mod)));
+        }
     }
 
     const deleteMods = async () => {
@@ -182,7 +207,7 @@ export default function ModManager() {
     const makePlural = () => selectedMods.length > 1 ? 's' : '';
 
     const displayModsOrEmpty = () => {
-        if (modsList.length > 0) {
+        if (modsList != null && modsList.length > 0) {
             return (
                 <SelectList className="mods-panel__list" items={modsList} onChange={(selectedMods) => {
                     setSelectedMods(selectedMods);
