@@ -2,11 +2,13 @@
 
 An application for managing minecraft mods.
 
-Currently a user can see their currently installed mods as well as adding mods.
+Currently users can:
+- see currently installed mods
+- add mods
+- delete (all) mods
 
 ## Todo
 
-- delete (all) mod(s)
 - replace mod(s)
 - read archive info json
 - modify values inside archive info json
