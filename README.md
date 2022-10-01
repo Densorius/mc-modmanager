@@ -3,17 +3,17 @@
 An application for managing minecraft mods.
 
 Currently users can:
-- see currently installed mods
-- add mods
-- delete (all) mods
+- See currently installed mods
+- Add mods
+- Delete (all) mods
 
 ## Todo
 
-- replace mod(s)
-- read archive info json
-- modify values inside archive info json
-- show errors to user
-- show progess bar when adding, deleting or replacing mods.
+- Replace mod(s)
+- Read archive info json
+- Modify values inside archive info json
+- Show errors to user
+- Show progess bar when adding, deleting or replacing mods.
 
 ## Live Development
 
