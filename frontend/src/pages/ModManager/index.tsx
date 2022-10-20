@@ -9,6 +9,7 @@ import SideBar from "./sidebar";
 import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
+import { backend } from "../../../wailsjs/go/models";
 
 type Mod = {
     name: string,
@@ -33,6 +34,30 @@ const getFileNameFromPath = (path: string) => {
     return pathSplitted[pathSplitted.length - 1];
 }
 
+/**
+ * Opens a open file dialog and runs a given function when the user has selected mods.
+ * 
+ * @param action function that runs when user has selected mods.
+ */
+async function handleOpenFileDialog(action: (result: backend.OpenFileDialogResult) => void) {
+    const openFileResult = await OpenFileDialog();
+
+    if (openFileResult.StatusCode === 'open-file-dialog/cancelled') {
+        return;
+    }
+
+    if (openFileResult.StatusCode === 'open-file-dialog/error') {
+        // TODO: tell user a error occured
+        console.log('something happened: ', openFileResult.Message);
+
+        return;
+    }
+
+    if (openFileResult.StatusCode === 'open-file-dialog/success') {
+        action(openFileResult);
+    }
+}
+
 export default function ModManager() {
 
     const [selectedMods, setSelectedMods] = useState([] as string[]);
@@ -42,6 +67,7 @@ export default function ModManager() {
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
+    const [replaceModalOpened, setReplaceModalOpened] = useState(false);
 
     const openFileInput = useRef<HTMLInputElement>(null);
     const [modsDirectory, setModsDirectory] = useState("");
@@ -200,8 +226,76 @@ export default function ModManager() {
         }
     }
 
-    const replaceMods = () => {
-        console.log("Replace");
+    async function replaceMods() {
+        setReplaceModalOpened(false);
+
+        await handleOpenFileDialog(async openFileResult => {
+            // user accepted to replace mods and selected mods
+            let modsListCopy = [...modsList];
+
+            await handleDeleteMods(modsListCopy, deletedMods => {
+                modsListCopy = modsListCopy.filter(mod => !deletedMods.includes(mod));
+            });
+
+            await handleMoveMods(openFileResult.Files, movedFiles => {
+                modsListCopy = [...modsListCopy, ...movedFiles];
+
+                setModsList(oldModsList => oldModsList = modsListCopy)
+            });
+        });
+    }
+
+    async function handleMoveMods(files: string[], action: (movedFiles: string[]) => void) {
+        let movedFiles: string[] = [];
+
+        for (const file of files) {
+            if (modsList.includes(getFileNameFromPath(file))) {
+                // TODO: tell user they tried to add a mod that already exists
+                console.log('Mod already in mods list.');
+
+                continue;
+            }
+
+            const moveFileResult = await MoveFile(file, modsDirectory);
+
+            if (moveFileResult.StatusCode === 'file-move/error') {
+                // TODO: tell user a error occured
+                console.log('Something happened: ', moveFileResult.Message);
+                
+                break;
+            }
+
+            if (moveFileResult.StatusCode === 'file-move/success') {
+                movedFiles = [...movedFiles, moveFileResult.File];
+            }
+        }
+
+        action(movedFiles);
+    }
+
+    async function handleDeleteMods(modsList: string[], action: (deletedMods: string[]) => void) {
+        const modsToDelete = modsList.filter(mod => selectedMods.includes(mod));
+        let deletedMods: string[] = [];
+
+        for (const modToDelete of modsToDelete) {
+            const deleteResult = await DeleteFile(`${modsDirectory}\\${modToDelete}`);
+
+            if (deleteResult.StatusCode === 'deletion/error') {
+                console.log('Error deleting file: ', deleteResult.Message);
+                continue; // error, skip to next mod to delete
+            }
+
+            if (deleteResult.StatusCode === 'deletion/success') {
+                // add the deleted mod to deletedMods array
+                deletedMods = [...deletedMods, modToDelete];
+            }
+        }
+
+        if (deletedMods.length > 0) {
+            action(deletedMods);
+        } else {
+            console.error('No mods where deleted...');
+        }
     }
 
     const makePlural = () => selectedMods.length > 1 ? 's' : '';
@@ -254,6 +348,17 @@ export default function ModManager() {
                 noPressed={() => setDeleteAllModalOpened(false)}
             />
 
+            <ConfirmModal
+                title={`Replace mod${makePlural()}`}
+                text={`Are you sure you want to replace the selected mod${makePlural()}`}
+
+                opened={replaceModalOpened}
+                onClose={() => setReplaceModalOpened(false)}
+
+                yesPressed={replaceMods}
+                noPressed={() => setReplaceModalOpened(false)}
+            />
+
             <InfoBar name={name} version={version} modloader={modloader} />
 
             <div className="mod-manager-container">
@@ -267,7 +372,7 @@ export default function ModManager() {
                     deleteAllButtonDisabled={deleteAllButtonDisabled}
                     deleteAllPressed={() => setDeleteAllModalOpened(true)}
                     deletePressed={() => setDeleteModalOpened(true)} 
-                    replacePressed={replaceMods} 
+                    replacePressed={() => setReplaceModalOpened(true)} 
                 />
             </div>
         </div>
