@@ -11,24 +11,11 @@ import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile } from '.
 import './style.scss'
 import { backend } from "../../../wailsjs/go/models";
 
-type Mod = {
-    name: string,
-    selected: boolean
-}
-
 const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
 
-const mods = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet'];
-
-const renderMods = () => {
-    return mods.map(mod => {
-        return <li key={mod} className="mods-panel__list--item">{mod}</li>
-    });
-}
-
-const getFileNameFromPath = (path: string) => {
+function getFileNameFromPath(path: string) {
     const pathSplitted = path.split('\\');
 
     return pathSplitted[pathSplitted.length - 1];
@@ -73,7 +60,7 @@ export default function ModManager() {
     const [modsDirectory, setModsDirectory] = useState("");
 
     useEffect(() => {
-        const getData = async () => {
+        async function getData() {
             const userDirectory = await GetUserHomeDir();
             const modsDir = userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`;
 
@@ -87,8 +74,7 @@ export default function ModManager() {
         getData();
     }, []);
 
-    // TOOD: filesystem interaction
-    const addMods = async () => {
+    async function addMods() {
         const openFileResult = await OpenFileDialog();
 
         if (openFileResult.StatusCode === 'open-file-dialog-cancelled') {
@@ -130,32 +116,7 @@ export default function ModManager() {
         }
     }
 
-    const addModsDemo = () => {
-        const modsArray = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscinf', 'elit', 'sed', 'do'];
-        let timeOut = 0;
-        
-        while (timeOut != 500) {
-            const randomIndex = Math.floor(Math.random() * modsArray.length);
-
-            const modToAdd = modsArray[randomIndex];
-
-            timeOut++; 
-
-            if (!modsList.includes(modToAdd)) {
-                setModsList(oldModsList => [...oldModsList, modToAdd]);
-
-                break;
-            }
-        }
-        
-        // state has't updated so length is still one less.
-        if (modsList.length == 0) {
-            setDeleteAllButtonDisabled(false);
-        }
-    }
-
-    // TOOD: filesystem interaction
-    const deleteAllMods = async () => {
+    async function deleteAllMods() {
         setDeleteAllModalOpened(false);
         
         // make 
@@ -188,7 +149,7 @@ export default function ModManager() {
         }
     }
 
-    const deleteMods = async () => {
+    async function deleteMods() {
         // User agreed to delete selected mods.
 
         setDeleteModalOpened(false);
@@ -300,7 +261,7 @@ export default function ModManager() {
 
     const makePlural = () => selectedMods.length > 1 ? 's' : '';
 
-    const displayModsOrEmpty = () => {
+    function displayModsOrEmpty() {
         if (modsList != null && modsList.length > 0) {
             return (
                 <SelectList className="mods-panel__list" items={modsList} onChange={(selectedMods) => {

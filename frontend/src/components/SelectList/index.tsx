@@ -31,7 +31,7 @@ export default function SelectList(props: Iprops) {
             last: null
         }
 
-        const handleSelectChange = (event: Event | KeyboardEvent) => {
+        function handleSelectChange(event: Event | KeyboardEvent) {
 
             let selectedItems: string[] = [];
 
@@ -41,18 +41,18 @@ export default function SelectList(props: Iprops) {
             // deselect all items except when user is holding ctrl or shift key
             if (!ctrlPressed && !shiftPressed) {
                 listItems.forEach(element => {
-                    element.classList.remove(SELECTED_CLASS)
+                    element.classList.remove(SELECTED_CLASS);
                 });
             }
 
             if (shiftPressed) {
-                
+
                 let index = parseInt((event.target as HTMLLIElement).dataset.index!);
 
                 // if index of first item is unknown, 
                 // set selected item as highlighted and set it's index as the range's first number
                 if (range.first == null) {
-                    (event.target as Element).classList.add(SELECTED_CLASS)
+                    (event.target as Element).classList.add(SELECTED_CLASS);
 
                     range.first = index;
                 } else {
@@ -66,19 +66,19 @@ export default function SelectList(props: Iprops) {
 
                     listItems.forEach((element, index) => {
                         if (index >= range.first! && index <= range.last!) {
-                            element.classList.add(SELECTED_CLASS)
+                            element.classList.add(SELECTED_CLASS);
                         }
                     });
                 }
             }
 
             if (!shiftPressed) {
-                let item = event.target as HTMLLIElement 
+                let item = event.target as HTMLLIElement;
 
                 item.classList.add(SELECTED_CLASS);
                 range.first = parseInt(item.dataset.index!);
             }
-    
+
             listItems.forEach(element => {
                 if (element.classList.contains(SELECTED_CLASS)) {
                     selectedItems.push(element.textContent!);
@@ -106,14 +106,14 @@ export default function SelectList(props: Iprops) {
     )
 }
 
-const swapRangeValues = (range: Range) => {
-    return {first: range.last, last: range.first}
+function swapRangeValues(range: Range) {
+    return { first: range.last, last: range.first };
 }
 
-const renderItems = (items: string[]) => {
+function renderItems(items: string[]) {
     return items.map((item, index) => {
         return (
             <li key={item} data-index={index} className="selectlist--item">{item}</li>
-        )
+        );
     });
 }
