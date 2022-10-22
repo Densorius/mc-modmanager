@@ -24,7 +24,7 @@ function getFileNameFromPath(path: string) {
 /**
  * Opens a open file dialog and runs a given function when the user has selected mods.
  * 
- * @param action function that runs when user has selected mods.
+ * @param action Function that runs when user has selected mods.
  */
 async function handleOpenFileDialog(action: (result: backend.OpenFileDialogResult) => void) {
     const openFileResult = await OpenFileDialog();
@@ -149,29 +149,14 @@ export default function ModManager() {
         }
     }
 
+    /**
+     * Deletes the selected mods. Then updates the modslist accordingly without requirering a file system request.
+     */
     async function deleteMods() {
         // User agreed to delete selected mods.
-
         setDeleteModalOpened(false);
 
-        const modsToDelete = modsList.filter(mod => selectedMods.includes(mod));
-        let deletedMods: string[] = [];
-
-        for (const modToDelete of modsToDelete) {
-            const deleteResult = await DeleteFile(`${modsDirectory}\\${modToDelete}`);
-
-            if (deleteResult.StatusCode === 'deletion/error') {
-                console.log('Error deleting file: ', deleteResult.Message);
-                continue; // error, skip to next mod to delete
-            }
-
-            if (deleteResult.StatusCode === 'deletion/success') {
-                // add the deleted mod to deletedMods array
-                deletedMods = [...deletedMods, modToDelete];
-            }
-        }
-
-        if (deletedMods.length > 0) {
+        await handleDeleteMods(modsList, deletedMods => {
             setModsList(currentModsList => {
                 let newModsList = currentModsList.filter(mod => !deletedMods.includes(mod));
 
@@ -182,11 +167,12 @@ export default function ModManager() {
 
                 return newModsList;
             });
-        } else {
-            console.error('No mods where deleted...');
-        }
+        });
     }
 
+    /**
+     * Replaces mods the user has selected with mods selected through a open file dialog.
+     */
     async function replaceMods() {
         setReplaceModalOpened(false);
 
@@ -201,11 +187,18 @@ export default function ModManager() {
             await handleMoveMods(openFileResult.Files, movedFiles => {
                 modsListCopy = [...modsListCopy, ...movedFiles];
 
-                setModsList(oldModsList => oldModsList = modsListCopy)
+                setModsList(oldModsList => oldModsList = modsListCopy);
             });
         });
     }
 
+    /**
+     * Moves mods the user has selected to the mods directory.
+     * A given function runs after the move with mods that have been moved.
+     * 
+     * @param files Mods to move. 
+     * @param action Function to run after the move (array of moved files as argument).
+     */
     async function handleMoveMods(files: string[], action: (movedFiles: string[]) => void) {
         let movedFiles: string[] = [];
 
@@ -234,6 +227,13 @@ export default function ModManager() {
         action(movedFiles);
     }
 
+    /**
+     * Deletes mods the user selected. 
+     * After deletion is succesful a given function runs with the deleted mods as a argument.
+     * 
+     * @param modsList List of mods to check for deletion
+     * @param action A function to run after mods have been deleted (array of deleted mods as the argument)
+     */
     async function handleDeleteMods(modsList: string[], action: (deletedMods: string[]) => void) {
         const modsToDelete = modsList.filter(mod => selectedMods.includes(mod));
         let deletedMods: string[] = [];
