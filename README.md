@@ -10,7 +10,6 @@ Currently users can:
 
 ## Todo
 
-- Read archive info json
 - Modify values inside archive info json
 - Show errors to user
 - Show progess bar when adding, deleting or replacing mods.
