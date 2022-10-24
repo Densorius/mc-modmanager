@@ -14,30 +14,6 @@ type App struct {
 	ctx context.Context
 }
 
-// The result from opening a open file dialog. The following status codes exists
-//
-// open-file-dialog-error: Files is empty, Message contains the error
-//
-// open-file-dialog-cancelled: Files is empty, Message is empty
-//
-// open-file-dialog-success: Files contains a array of paths, Message is empty
-type OpenFileDialogResult struct {
-	Files      []string `json:"Files"`
-	Message    string   `json:"Message"`
-	StatusCode string   `json:"StatusCode"`
-}
-
-type MoveFileResult struct {
-	File       string `json:"File"`
-	Message    string `json:"Message"`
-	StatusCode string `json:"StatusCode"`
-}
-
-type DeleteFileResult struct {
-	Message    string `json:"Message"`
-	StatusCode string `json:"StatusCode"`
-}
-
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -173,8 +149,27 @@ func (a *App) DeleteFile(file string) DeleteFileResult {
 	}
 }
 
+func (a *App) GetArchiveInfo(path string) GetArchiveInfoResult {
+	content, err := os.ReadFile(path)
+
+	if err != nil {
+		return GetArchiveInfoResult{
+			Json: "",
+			Message: err.Error(),
+			StatusCode: "get-archive-info/error",
+		}
+	}
+
+	return GetArchiveInfoResult{
+		Json: string(content),
+		Message: "",
+		StatusCode: "get-archive-info/success",
+	}
+}
+
 func getFileNameFromPath(path *string) string {
 	pathSplit := strings.Split(*path, "\\")
 
 	return pathSplit[len(pathSplit) - 1]
 }
+

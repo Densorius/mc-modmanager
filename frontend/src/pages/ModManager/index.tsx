@@ -6,14 +6,16 @@ import SelectList from "../../components/SelectList";
 import InfoBar from "./infobar";
 import SideBar from "./sidebar";
 
-import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile } from '../../../wailsjs/go/backend/App';
+import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile, GetArchiveInfo } from '../../../wailsjs/go/backend/App';
 
 import './style.scss'
 import { backend } from "../../../wailsjs/go/models";
 
-const name = 'mc chocolate';
-const version = '1.18.1';
-const modloader = 'Fabric';
+interface ArchiveInfo {
+    name:      string,
+    version:   string,
+    modloader: string
+}
 
 /**
  * Extracts the file name from a given path.
@@ -64,6 +66,7 @@ export default function ModManager() {
     const [replaceModalOpened, setReplaceModalOpened] = useState(false);
 
     const [modsDirectory, setModsDirectory] = useState("");
+    const [archiveInfo, setArchiveInfo] = useState({} as ArchiveInfo);
 
     useEffect(() => {
         const getData = async () => {
@@ -71,10 +74,17 @@ export default function ModManager() {
             const modsDir = userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`;
 
             setModsDirectory(modsDir);
+            setModsList(await GetMods(modsDir));
 
-            const mods = await GetMods(modsDir);
+            const archiveInfoResult = await GetArchiveInfo(`${modsDir}\\archive-info.json`);
 
-            setModsList(mods);
+            if (archiveInfoResult.StatusCode === 'get-archive-info/error') {
+                console.log(archiveInfoResult.Message);
+            }
+
+            if (archiveInfoResult.StatusCode === 'get-archive-info/success') {
+                setArchiveInfo(info => info = JSON.parse(archiveInfoResult.Json));
+            }
         }
 
         getData();
@@ -311,7 +321,7 @@ export default function ModManager() {
                 noPressed={() => setReplaceModalOpened(false)}
             />
 
-            <InfoBar name={name} version={version} modloader={modloader} />
+            <InfoBar name={archiveInfo.name} version={archiveInfo.version} modloader={archiveInfo.modloader} />
 
             <div className="mod-manager-container">
                 <div className="mods-panel">
@@ -320,6 +330,7 @@ export default function ModManager() {
 
                 <SideBar 
                     buttonsDisabled={buttonsDisabled}
+                    settingsPressed={() => console.log('Settings pressed')}
                     addPressed={addMods}
                     deleteAllButtonDisabled={deleteAllButtonDisabled}
                     deleteAllPressed={() => setDeleteAllModalOpened(true)}

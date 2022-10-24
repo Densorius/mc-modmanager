@@ -4,6 +4,8 @@ import {backend} from '../models';
 
 export function DeleteFile(arg1:string):Promise<backend.DeleteFileResult>;
 
+export function GetArchiveInfo(arg1:string):Promise<backend.GetArchiveInfoResult>;
+
 export function GetMods(arg1:string):Promise<Array<string>>;
 
 export function GetUserHomeDir():Promise<string>;

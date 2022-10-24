@@ -6,6 +6,10 @@ export function DeleteFile(arg1) {
   return window['go']['backend']['App']['DeleteFile'](arg1);
 }
 
+export function GetArchiveInfo(arg1) {
+  return window['go']['backend']['App']['GetArchiveInfo'](arg1);
+}
+
 export function GetMods(arg1) {
   return window['go']['backend']['App']['GetMods'](arg1);
 }
