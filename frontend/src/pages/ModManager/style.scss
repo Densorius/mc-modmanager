@@ -118,7 +118,8 @@ $info-bar-height: 3.6em;
         box-shadow: 0px 0px 2px colors.$shadow-color inset;
 
         &--item {
-            padding: 0.3em;
+            // padding: 0.3em;
+            padding: 2em;
             color: white;
 
             &:nth-child(even) {

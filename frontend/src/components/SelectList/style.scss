@@ -4,10 +4,14 @@ $table-base-color: hsl(240, 5%, 22%);
 
     list-style: none;
     color: white;
-    padding-left: 0;
+
+    $padding: 0.25em;
 
     &--item {
         user-select: none;
+        padding-left: 0.5em;
+        padding-top: $padding;
+        padding-bottom: $padding;
 
         &:nth-child(even) {
             background-color: darken($table-base-color, 2%);

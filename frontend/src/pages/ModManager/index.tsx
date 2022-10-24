@@ -15,6 +15,13 @@ const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
 
+/**
+ * Extracts the file name from a given path.
+ * 
+ * @param path Path to extract the file name from.
+ * 
+ * @returns The file name.
+ */
 const getFileNameFromPath = (path: string) => {
     const pathSplitted = path.split('\\');
 
