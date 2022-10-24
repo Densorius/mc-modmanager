@@ -6,10 +6,10 @@ Currently users can:
 - See currently installed mods
 - Add mods
 - Delete (all) mods
+- Replace mod(s)
 
 ## Todo
 
-- Replace mod(s)
 - Read archive info json
 - Modify values inside archive info json
 - Show errors to user

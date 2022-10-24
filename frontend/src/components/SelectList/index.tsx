@@ -31,7 +31,7 @@ export default function SelectList(props: Iprops) {
             last: null
         }
 
-        function handleSelectChange(event: Event | KeyboardEvent) {
+        const handleSelectChange = (event: Event | KeyboardEvent) => {
 
             let selectedItems: string[] = [];
 
@@ -106,14 +106,12 @@ export default function SelectList(props: Iprops) {
     )
 }
 
-function swapRangeValues(range: Range) {
+const swapRangeValues = (range: Range) => {
     return { first: range.last, last: range.first };
 }
 
-function renderItems(items: string[]) {
-    return items.map((item, index) => {
-        return (
-            <li key={item} data-index={index} className="selectlist--item">{item}</li>
-        );
-    });
-}
+const renderItems = (items: string[]) => items.map((item, index) => {
+    return (
+        <li key={item} data-index={index} className="selectlist--item">{item}</li>
+    );
+});

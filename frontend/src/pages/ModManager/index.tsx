@@ -15,7 +15,7 @@ const name = 'mc chocolate';
 const version = '1.18.1';
 const modloader = 'Fabric';
 
-function getFileNameFromPath(path: string) {
+const getFileNameFromPath = (path: string) => {
     const pathSplitted = path.split('\\');
 
     return pathSplitted[pathSplitted.length - 1];
@@ -26,7 +26,7 @@ function getFileNameFromPath(path: string) {
  * 
  * @param action Function that runs when user has selected mods.
  */
-async function handleOpenFileDialog(action: (result: backend.OpenFileDialogResult) => void) {
+const handleOpenFileDialog = async (action: (result: backend.OpenFileDialogResult) => void) => {
     const openFileResult = await OpenFileDialog();
 
     if (openFileResult.StatusCode === 'open-file-dialog/cancelled') {
@@ -56,11 +56,10 @@ export default function ModManager() {
     const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
     const [replaceModalOpened, setReplaceModalOpened] = useState(false);
 
-    const openFileInput = useRef<HTMLInputElement>(null);
     const [modsDirectory, setModsDirectory] = useState("");
 
     useEffect(() => {
-        async function getData() {
+        const getData = async () => {
             const userDirectory = await GetUserHomeDir();
             const modsDir = userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`;
 
@@ -74,7 +73,7 @@ export default function ModManager() {
         getData();
     }, []);
 
-    async function addMods() {
+    const addMods = async () => {
         const openFileResult = await OpenFileDialog();
 
         if (openFileResult.StatusCode === 'open-file-dialog-cancelled') {
@@ -89,37 +88,15 @@ export default function ModManager() {
         }
 
         if (openFileResult.StatusCode === 'open-file-dialog/success') {
-            const movedFiles: string[] = [];
-
-            for (const file of openFileResult.Files) {
-                if (modsList.includes(getFileNameFromPath(file))) {
-                    // TODO: tell user they tried to add a mod that already exists
-                    console.log('Mod already in mods list.');
-
-                    continue;
-                }
-
-                const moveFileResult = await MoveFile(file, modsDirectory);
-
-                if (moveFileResult.StatusCode === 'file-move/error') {
-                    // TODO: tell user a error occured
-                    console.log('Something happened: ', moveFileResult.Message);
-                    
-                    break;
-                }
-
-                if (moveFileResult.StatusCode === 'file-move/success') {
-                    movedFiles.push(moveFileResult.File);
-                }
-            }
-            setModsList(oldModsList => [...oldModsList, ...movedFiles]);
+            handleMoveMods(openFileResult.Files, movedFiles => {
+                setModsList(oldModsList => [...oldModsList, ...movedFiles]);
+            });
         }
     }
 
-    async function deleteAllMods() {
+    const deleteAllMods = async () => {
         setDeleteAllModalOpened(false);
         
-        // make 
         let deletedMods: string[] = [];
         let errorMessages: string[] = [];
 
@@ -152,7 +129,7 @@ export default function ModManager() {
     /**
      * Deletes the selected mods. Then updates the modslist accordingly without requirering a file system request.
      */
-    async function deleteMods() {
+    const deleteMods = async () => {
         // User agreed to delete selected mods.
         setDeleteModalOpened(false);
 
@@ -173,7 +150,7 @@ export default function ModManager() {
     /**
      * Replaces mods the user has selected with mods selected through a open file dialog.
      */
-    async function replaceMods() {
+    const replaceMods = async () => {
         setReplaceModalOpened(false);
 
         await handleOpenFileDialog(async openFileResult => {
@@ -199,7 +176,7 @@ export default function ModManager() {
      * @param files Mods to move. 
      * @param action Function to run after the move (array of moved files as argument).
      */
-    async function handleMoveMods(files: string[], action: (movedFiles: string[]) => void) {
+    const handleMoveMods = async (files: string[], action: (movedFiles: string[]) => void) => {
         let movedFiles: string[] = [];
 
         for (const file of files) {
@@ -234,7 +211,7 @@ export default function ModManager() {
      * @param modsList List of mods to check for deletion
      * @param action A function to run after mods have been deleted (array of deleted mods as the argument)
      */
-    async function handleDeleteMods(modsList: string[], action: (deletedMods: string[]) => void) {
+    const handleDeleteMods = async (modsList: string[], action: (deletedMods: string[]) => void) => {
         const modsToDelete = modsList.filter(mod => selectedMods.includes(mod));
         let deletedMods: string[] = [];
 
@@ -259,9 +236,17 @@ export default function ModManager() {
         }
     }
 
+    /**
+     * returns a 's' if selected mods array is longer than 1, no character otherwise.
+     * @returns a 's' if selected mods array is longer than 1, no character otherwise.
+     */
     const makePlural = () => selectedMods.length > 1 ? 's' : '';
 
-    function displayModsOrEmpty() {
+    /**
+     * Displays mods in the users mod directory.
+     * If mods folder is empty it displays a message telling the user the folder is empty instead.
+     */
+    const displayModsOrEmpty = () => {
         if (modsList != null && modsList.length > 0) {
             return (
                 <SelectList className="mods-panel__list" items={modsList} onChange={(selectedMods) => {
@@ -285,7 +270,6 @@ export default function ModManager() {
 
     return (
         <div className="mc-background page">
-            <input type="file" id="manager-open-file" ref={openFileInput} multiple />
 
             <ConfirmModal 
                 title={`Delete mod${makePlural()}`}
@@ -311,7 +295,7 @@ export default function ModManager() {
 
             <ConfirmModal
                 title={`Replace mod${makePlural()}`}
-                text={`Are you sure you want to replace the selected mod${makePlural()}`}
+                text={`Are you sure you want to replace the selected mod${makePlural()}?`}
 
                 opened={replaceModalOpened}
                 onClose={() => setReplaceModalOpened(false)}
