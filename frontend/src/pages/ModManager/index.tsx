@@ -10,6 +10,8 @@ import { GetUserHomeDir, GetMods, OpenFileDialog, MoveFile, DeleteFile, GetArchi
 
 import './style.scss'
 import { backend } from "../../../wailsjs/go/models";
+import { stringIsEmpty } from "../../helpers/stringHelpers";
+import { info } from "sass";
 
 interface ArchiveInfo {
     name:      string,
@@ -54,6 +56,35 @@ const handleOpenFileDialog = async (action: (result: backend.OpenFileDialogResul
     }
 }
 
+/**
+ * Parses a string containing the json for the archive info. 
+ * If the string couldn't be parsed all fields are set to "Unknown"
+ * 
+ * @param archiveInfo string containing the json
+ * @returns archive info json
+ */
+const parseArchiveInfoJson = (archiveInfo: string): ArchiveInfo => {
+    try {
+        let archiveInfoJson = JSON.parse(archiveInfo);
+
+        let fields = ["version", "modloader", "name"];
+
+        for (const field of fields) {
+            if (stringIsEmpty(archiveInfoJson[field])) {
+                archiveInfoJson[field] = "Unknown";
+            }
+        }
+
+        return archiveInfoJson;
+    } catch (SyntaxException) {
+        return {
+            version: "Unknown",
+            modloader: "Unknown",
+            name: "Unknown"
+        }
+    }
+}
+
 export default function ModManager() {
 
     const [selectedMods, setSelectedMods] = useState([] as string[]);
@@ -69,6 +100,7 @@ export default function ModManager() {
     const [archiveInfo, setArchiveInfo] = useState({} as ArchiveInfo);
 
     useEffect(() => {
+        // TODO: fix rerenders
         const getData = async () => {
             const userDirectory = await GetUserHomeDir();
             const modsDir = userDirectory + `\\AppData\\Roaming\\.minecraft\\mods`;
@@ -80,10 +112,11 @@ export default function ModManager() {
 
             if (archiveInfoResult.StatusCode === 'get-archive-info/error') {
                 console.log(archiveInfoResult.Message);
+                setArchiveInfo(info => info = parseArchiveInfoJson("{}"));
             }
 
             if (archiveInfoResult.StatusCode === 'get-archive-info/success') {
-                setArchiveInfo(info => info = JSON.parse(archiveInfoResult.Json));
+                setArchiveInfo(info => info = parseArchiveInfoJson(archiveInfoResult.Json));
             }
         }
 
